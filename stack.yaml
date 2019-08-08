@@ -3,4 +3,4 @@ packages:
   - .
 extra-deps:
   - git: https://github.com/mdippery/saturn.git
-    commit: 3e6b7909b19b5b71877ea1f6d4d7ddb4dfd191a3
+    commit: 5eedd63c3e4e0d6afd6d5ebf5a55db17141bb289
