@@ -21,7 +21,7 @@ module Main where
 import Data.List             (intercalate)
 import Data.Version          (showVersion)
 import System.Environment    (getArgs, getProgName)
-import System.Exit           (ExitCode(..), exitWith)
+import System.Exit           (ExitCode(..), exitSuccess, exitWith)
 import System.IO             (hPutStrLn, stderr)
 import Text.Printf           (printf)
 import Text.Read             (readMaybe)
@@ -34,9 +34,7 @@ readBlock :: String -> Maybe IPAddressRange
 readBlock = readMaybe
 
 help :: IO String
-help = do
-  exe <- getProgName
-  return $ printf "Usage: %s <cidr block>" exe
+help = printf "Usage: %s <cidr block>" <$> getProgName
 
 version :: IO String
 version = do
@@ -45,7 +43,7 @@ version = do
   return $ printf "%s v%s" exe v
 
 die :: Int -> IO ()
-die 0    = exitWith ExitSuccess
+die 0    = exitSuccess
 die code = exitWith (ExitFailure code)
 
 main :: IO ()
@@ -60,7 +58,7 @@ main = do
       version >>= putStrLn
     ("--version":_) ->
       version >>= putStrLn
-    (ip:_) -> do
+    (ip:_) ->
       case readBlock ip of
         Just r ->
           putStrLn $ intercalate "\n" $ map show $ addresses r
