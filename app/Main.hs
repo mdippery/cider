@@ -33,16 +33,16 @@ import qualified Paths_pyxis as P
 readBlock :: String -> Maybe IPAddressRange
 readBlock = readMaybe
 
-help :: IO ()
+help :: IO String
 help = do
   exe <- getProgName
-  putStrLn $ printf "Usage: %s <cidr block>" exe
+  return $ printf "Usage: %s <cidr block>" exe
 
-version :: IO ()
+version :: IO String
 version = do
   exe <- getProgName
   let v = showVersion P.version
-  putStrLn $ printf "%s v%s" exe v
+  return $ printf "%s v%s" exe v
 
 die :: Int -> IO ()
 die 0    = exitWith ExitSuccess
@@ -53,13 +53,13 @@ main = do
   argv <- getArgs
   case argv of
     ("-h":_) ->
-      help
+      help >>= putStrLn
     ("--help":_) ->
-      help
+      help >>= putStrLn
     ("-V":_) ->
-      version
+      version >>= putStrLn
     ("--version":_) ->
-      version
+      version >>= putStrLn
     (ip:_) -> do
       case readBlock ip of
         Just r ->
@@ -67,6 +67,5 @@ main = do
         Nothing -> do
           hPutStrLn stderr $ "Invalid CIDR block: " ++ show ip
           die 2
-    _ -> do
-      help
-      die 1
+    _ ->
+      help >>= hPutStrLn stderr >> die 1
