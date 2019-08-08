@@ -28,7 +28,7 @@ import Text.Read             (readMaybe)
 
 import Saturn.Network (IPAddressRange, addresses)
 
-import qualified Paths_pyxis as P
+import qualified Paths_cider as P
 
 readBlock :: String -> Maybe IPAddressRange
 readBlock = readMaybe
