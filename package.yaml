@@ -6,6 +6,9 @@ author:              "Michael Dippery"
 maintainer:          "michael@monkey-robot.com"
 copyright:           "2019 Michael Dippery"
 
+extra-source-files:
+  - COPYING
+
 # Metadata used when publishing your package
 # synopsis:            Short description of your package
 # category:            Utilities
