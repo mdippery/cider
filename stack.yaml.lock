@@ -3,7 +3,21 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/lock_files
 
-packages: []
+packages:
+- completed:
+    cabal-file:
+      size: 1679
+      sha256: ca88f20f5968694a4172b0d59e95f6c28f3bbd07fd03fa2f4e5ce09c1b0c48f6
+    name: saturn
+    version: 0.2.0.0
+    git: https://github.com/mdippery/saturn.git
+    pantry-tree:
+      size: 1547
+      sha256: f76bdd925655ce137a40097097492cc29ea45f1c5c8e8b45f6575f4de7562430
+    commit: 3e6b7909b19b5b71877ea1f6d4d7ddb4dfd191a3
+  original:
+    git: https://github.com/mdippery/saturn.git
+    commit: 3e6b7909b19b5b71877ea1f6d4d7ddb4dfd191a3
 snapshots:
 - completed:
     size: 523443
