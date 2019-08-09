@@ -13,11 +13,11 @@ packages:
     git: https://github.com/mdippery/saturn.git
     pantry-tree:
       size: 1602
-      sha256: 1e7d4977f7a991885c04f0e175336ff35560c59ec3d9025512856624e02944b8
-    commit: 2ff35f241d022ade454f8c71194eb8a313ec142f
+      sha256: 1e8be924ef804f77f8979e73a468767e6c342a0855042afcb63b3e5620a83413
+    commit: 001cad974ef0fa602b6237589257e00c11fdf7e8
   original:
     git: https://github.com/mdippery/saturn.git
-    commit: 2ff35f241d022ade454f8c71194eb8a313ec142f
+    commit: 001cad974ef0fa602b6237589257e00c11fdf7e8
 snapshots:
 - completed:
     size: 523443
