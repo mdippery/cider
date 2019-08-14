@@ -19,7 +19,14 @@ extra-source-files:
 description:         Please see the README on GitHub at <https://github.com/mdippery/cider#readme>
 
 dependencies:
-- base >= 4.7 && < 5
+  - base >= 4.7 && < 5
+
+library:
+  source-dirs: src
+  ghc-options:
+    - -Wall
+  dependencies:
+    - split
 
 executables:
   cider:
@@ -31,4 +38,16 @@ executables:
       - -with-rtsopts=-N
       - -Wall
     dependencies:
-      - saturn
+      - cider
+
+tests:
+  cider-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    dependencies:
+      - cider
+      - hspec
