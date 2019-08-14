@@ -1,10 +1,10 @@
-module Network.IP.IPv4Spec where
+module Data.IP.IPv4Spec where
 
 import Prelude hiding (length)
 
 import Control.Exception (evaluate)
 import Test.Hspec
-import Network.IP.IPv4
+import Data.IP.IPv4
 
 spec :: Spec
 spec = do

@@ -27,7 +27,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
   Models networks in Haskell.
 -}
-module Network.IP.IPv4
+module Data.IP.IPv4
   (
     -- * Data types
     IPAddress

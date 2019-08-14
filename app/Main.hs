@@ -26,7 +26,7 @@ import System.IO             (hPutStrLn, stderr)
 import Text.Printf           (printf)
 import Text.Read             (readMaybe)
 
-import Network.IP.IPv4 (IPAddressRange, addresses)
+import Data.IP.IPv4 (IPAddressRange, addresses)
 
 import qualified Paths_cider as P
 
