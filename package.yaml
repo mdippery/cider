@@ -1,7 +1,7 @@
 name:                cider
 version:             0.1.0.0
 github:              "mdippery/cider"
-license:             GPL-3
+license:             LGPL-3
 author:              "Michael Dippery"
 maintainer:          "michael@monkey-robot.com"
 copyright:           "2019 Michael Dippery"

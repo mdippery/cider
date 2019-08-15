@@ -22,7 +22,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 {-|
   Module      : Network.IP.IPv4
   Description : Network-related data types and functions
-  License     : LGPL
+  License     : LGPL-3
   Maintainer  : michael@monkey-robot.com
 
   Models networks in Haskell.
