@@ -46,6 +46,7 @@ module Data.IP.IPv4
   ) where
 
 import Prelude hiding (length)
+import qualified Prelude as P (length)
 
 import Control.Monad (ap)
 import Data.Bits     ((.&.), (.|.), Bits, shift)
@@ -54,8 +55,6 @@ import Data.List     (intercalate, nub, sort)
 import Data.Word     (Word32)
 
 import Data.List.Split (splitOn)
-
-import qualified Prelude as P (length)
 
 -- | A 32-bit IPv4 network address.
 --
