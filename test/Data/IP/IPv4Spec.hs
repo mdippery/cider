@@ -139,17 +139,20 @@ spec = do
       networkAddress range2 `shouldBe` expected2
       networkAddress range3 `shouldBe` expected3
 
-  describe "networkMask" $ do
+  describe "subnetMask" $ do
     it "returns the network mask in a range" $ do
       let range1    = read "202.54.1.2/27" :: IPAddressRange
           range2    = read "192.168.0.0/29" :: IPAddressRange
           range3    = read "192.168.1.0/24" :: IPAddressRange
+          range4    = read "172.16.0.0/12" :: IPAddressRange
           expected1 = "255.255.255.224"
           expected2 = "255.255.255.248"
           expected3 = "255.255.255.0"
-      (show . networkMask) range1 `shouldBe` expected1
-      (show . networkMask) range2 `shouldBe` expected2
-      (show . networkMask) range3 `shouldBe` expected3
+          expected4 = "255.240.0.0"
+      (show . subnetMask) range1 `shouldBe` expected1
+      (show . subnetMask) range2 `shouldBe` expected2
+      (show . subnetMask) range3 `shouldBe` expected3
+      (show . subnetMask) range4 `shouldBe` expected4
 
   describe "contains" $ do
     it "returns true if an IP address is contained within a range" $ do

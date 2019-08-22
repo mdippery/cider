@@ -42,7 +42,7 @@ module Data.IP.IPv4
   , addresses
   , length
   , networkAddress
-  , networkMask
+  , subnetMask
 
     -- * Searching
   , contains
@@ -178,9 +178,10 @@ networkAddress xs =
       mask  = 0xffffff00
    in IPAddress $ (addrAsInt first) .&. mask
 
--- | Calculates the network mask for a range of IP addresses.
-networkMask :: IPAddressRange -> NetworkMask
-networkMask xs =
+-- | Calculates the /subnet mask/ or /network mask/ for a range of
+-- IP addresses.
+subnetMask :: IPAddressRange -> NetworkMask
+subnetMask xs =
   let base  = networkAddress xs
       end   = last $ addresses xs
       d     = (addrAsInt end) - (addrAsInt base)
