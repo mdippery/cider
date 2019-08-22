@@ -84,7 +84,13 @@ instance Bounded IPAddress where
   minBound = read "0.0.0.0"
   maxBound = read "255.255.255.255"
 
-type NetworkMask = Word32
+newtype NetworkMask = NetworkMask { maskAsInt :: Word32 }
+
+instance Show NetworkMask where
+  show = show . maskAsInt
+
+instance Eq NetworkMask where
+  (NetworkMask x) == (NetworkMask y) = x == y
 
 -- | Represents a range of IP addresses.
 --
@@ -136,9 +142,10 @@ parseStringToRange s =
     Nothing -> Nothing
     Just (base, mask)
       | mask > 32 -> Nothing
-      | otherwise ->
-        let f a = a .&. (networkMask mask) == base .&. (networkMask mask)
-         in Just $ map IPAddress $ takeWhile f [base ..]
+      | otherwise -> Just $ map IPAddress $ takeWhile f [base ..]
+      where
+        g = maskAsInt . networkMask
+        f = (==) (base .&. (g mask)) . (.&.) (g mask)
 
 isOctet :: Word32 -> Bool
 isOctet n = n >= 0 && n < 256
@@ -147,7 +154,7 @@ maybeOctet :: Word32 -> Maybe Word32
 maybeOctet = ap (bool Nothing . Just) isOctet
 
 networkMask :: Word32 -> NetworkMask
-networkMask n = 0xffffffff `shift` fromIntegral (32 - n)
+networkMask = NetworkMask . shift 0xffffffff . fromIntegral . (32 -)
 
 -- | Combines two IP addresses into a single range.
 (.++.) :: IPAddressRange -> IPAddressRange -> IPAddressRange
