@@ -43,6 +43,7 @@ module Data.IP.IPv4
   , length
   , networkAddress
   , subnetMask
+  , broadcastAddress
 
     -- * Searching
   , contains
@@ -55,7 +56,7 @@ import Prelude hiding (length)
 import qualified Prelude as P (length)
 
 import Control.Monad (ap)
-import Data.Bits     ((.&.), (.|.), Bits, shift, shiftL, xor)
+import Data.Bits     ((.&.), (.|.), Bits, complement, shift, shiftL, xor)
 import Data.Bool     (bool)
 import Data.List     (intercalate, nub, sort)
 import Data.Word     (Word32)
@@ -189,6 +190,13 @@ subnetMask xs =
       m     = 0x1 `shiftL` (fromIntegral n)
       bits  = 0xffffffff `xor` (m - 1)
    in NetworkMask bits
+
+-- | Calculates the /broadcast address/ for a range of IP addresses.
+broadcastAddress :: IPAddressRange -> IPAddress
+broadcastAddress xs =
+  let rhs = addrAsInt $ networkAddress xs
+      lhs = complement $ maskAsInt $ subnetMask xs
+   in IPAddress $ lhs .|. rhs
 
 -- | True if the given address is part of the given address range.
 contains :: IPAddressRange -> IPAddress -> Bool

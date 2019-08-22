@@ -154,6 +154,18 @@ spec = do
       (show . subnetMask) range3 `shouldBe` expected3
       (show . subnetMask) range4 `shouldBe` expected4
 
+  describe "broadcastAddress" $ do
+    it "returns the broadcast address in a range" $ do
+      let range1    = read "172.16.0.0/12" :: IPAddressRange
+          range2    = read "192.168.1.0/24" :: IPAddressRange
+          range3    = read "202.54.1.2/27" :: IPAddressRange
+          expected1 = "172.31.255.255"
+          expected2 = "192.168.1.255"
+          expected3 = "202.54.1.31"
+      (show . broadcastAddress) range1 `shouldBe` expected1
+      (show . broadcastAddress) range2 `shouldBe` expected2
+      (show . broadcastAddress) range3 `shouldBe` expected3
+
   describe "contains" $ do
     it "returns true if an IP address is contained within a range" $ do
       let x = read "192.168.0.0/24" :: IPAddressRange
