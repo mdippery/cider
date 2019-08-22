@@ -32,6 +32,7 @@ module Data.IP.IPv4
     -- * Data types
     IPAddress
   , IPAddressRange
+  , NetworkMask
 
     -- * Operations
   , (.++.)
@@ -40,16 +41,21 @@ module Data.IP.IPv4
     -- * Basic functions
   , addresses
   , length
+  , networkAddress
+  , networkMask
 
     -- * Searching
   , contains
+
+  , -- temp
+  addrAsInt
   ) where
 
 import Prelude hiding (length)
 import qualified Prelude as P (length)
 
 import Control.Monad (ap)
-import Data.Bits     ((.&.), (.|.), Bits, shift)
+import Data.Bits     ((.&.), (.|.), Bits, shift, shiftL, xor)
 import Data.Bool     (bool)
 import Data.List     (intercalate, nub, sort)
 import Data.Word     (Word32)
@@ -84,10 +90,11 @@ instance Bounded IPAddress where
   minBound = read "0.0.0.0"
   maxBound = read "255.255.255.255"
 
+-- | Network mask.
 newtype NetworkMask = NetworkMask { maskAsInt :: Word32 }
 
 instance Show NetworkMask where
-  show = show . maskAsInt
+  show = addressToString . maskAsInt
 
 instance Eq NetworkMask where
   (NetworkMask x) == (NetworkMask y) = x == y
@@ -144,7 +151,7 @@ parseStringToRange s =
       | mask > 32 -> Nothing
       | otherwise -> Just $ map IPAddress $ takeWhile f [base ..]
       where
-        g = maskAsInt . networkMask
+        g = maskAsInt . maskFromBits
         f = (==) (base .&. (g mask)) . (.&.) (g mask)
 
 isOctet :: Word32 -> Bool
@@ -153,8 +160,8 @@ isOctet n = n >= 0 && n < 256
 maybeOctet :: Word32 -> Maybe Word32
 maybeOctet = ap (bool Nothing . Just) isOctet
 
-networkMask :: Word32 -> NetworkMask
-networkMask = NetworkMask . shift 0xffffffff . fromIntegral . (32 -)
+maskFromBits :: Word32 -> NetworkMask
+maskFromBits = NetworkMask . shift 0xffffffff . fromIntegral . (32 -)
 
 -- | Combines two IP addresses into a single range.
 (.++.) :: IPAddressRange -> IPAddressRange -> IPAddressRange
@@ -163,6 +170,24 @@ lhs .++. rhs = IPAddressRange $ sort $ nub $ addresses lhs ++ addresses rhs
 -- | Adds an IP address to an existing range.
 (.:) :: IPAddress -> IPAddressRange -> IPAddressRange
 addr .: addrs = IPAddressRange $ sort $ nub $ addr : addresses addrs
+
+-- | Calculates the base network address for a range of IP addresses.
+networkAddress :: IPAddressRange -> IPAddress
+networkAddress xs =
+  let first = head $ addresses xs
+      mask  = 0xffffff00
+   in IPAddress $ (addrAsInt first) .&. mask
+
+-- | Calculates the network mask for a range of IP addresses.
+networkMask :: IPAddressRange -> NetworkMask
+networkMask xs =
+  let base  = networkAddress xs
+      end   = last $ addresses xs
+      d     = (addrAsInt end) - (addrAsInt base)
+      n     = round $ logBase 2 (fromIntegral d)
+      m     = 0x1 `shiftL` (fromIntegral n)
+      bits  = 0xffffffff `xor` (m - 1)
+   in NetworkMask bits
 
 -- | True if the given address is part of the given address range.
 contains :: IPAddressRange -> IPAddress -> Bool
