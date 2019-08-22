@@ -62,10 +62,10 @@ import Data.List.Split (splitOn)
 --
 -- >>> read "192.168.0.1" :: IPAddress
 -- 192.168.0.1
-newtype IPAddress = IPAddress { asInteger :: Word32 }
+newtype IPAddress = IPAddress { addrAsInt :: Word32 }
 
 instance Show IPAddress where
-  show = addressToString . asInteger
+  show = addressToString . addrAsInt
 
 instance Read IPAddress where
   readsPrec _ = maybe [] (\a -> [(IPAddress a, "")]) . parseStringToAddress
@@ -78,7 +78,7 @@ instance Ord IPAddress where
 
 instance Enum IPAddress where
   toEnum = IPAddress . fromIntegral
-  fromEnum = fromIntegral . asInteger
+  fromEnum = fromIntegral . addrAsInt
 
 instance Bounded IPAddress where
   minBound = read "0.0.0.0"
