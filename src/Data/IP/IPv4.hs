@@ -101,6 +101,9 @@ instance Show IPAddressRange where
 instance Read IPAddressRange where
   readsPrec _ = maybe [] (\as -> [(IPAddressRange as, "")]) . parseStringToRange
 
+instance Eq IPAddressRange where
+  (IPAddressRange xs) == (IPAddressRange ys) = xs == ys
+
 -- | '<>' is a synonym for '.++.'
 instance Semigroup IPAddressRange where
   (<>) = (.++.)
