@@ -84,6 +84,8 @@ instance Bounded IPAddress where
   minBound = read "0.0.0.0"
   maxBound = read "255.255.255.255"
 
+type NetworkMask = Word32
+
 -- | Represents a range of IP addresses.
 --
 -- Convert a string in CIDR notation to an address using 'read' to create
@@ -135,8 +137,7 @@ parseStringToRange s =
     Just (base, mask)
       | mask > 32 -> Nothing
       | otherwise ->
-        let mask' = 0xffffffff `shift` fromIntegral (32 - mask)
-            f a = a .&. mask' == base .&. mask'
+        let f a = a .&. (networkMask mask) == base .&. (networkMask mask)
          in Just $ map IPAddress $ takeWhile f [base ..]
 
 isOctet :: Word32 -> Bool
@@ -144,6 +145,9 @@ isOctet n = n >= 0 && n < 256
 
 maybeOctet :: Word32 -> Maybe Word32
 maybeOctet = ap (bool Nothing . Just) isOctet
+
+networkMask :: Word32 -> NetworkMask
+networkMask n = 0xffffffff `shift` fromIntegral (32 - n)
 
 -- | Combines two IP addresses into a single range.
 (.++.) :: IPAddressRange -> IPAddressRange -> IPAddressRange
