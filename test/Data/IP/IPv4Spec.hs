@@ -65,86 +65,60 @@ spec = do
       it "should wrap around if the first IP address has been reached" $ do
         pred (read "0.0.0.0" :: IPAddress) `shouldBe` (read "255.255.255.255")
 
-  describe "IPAddressRange" $ do
+  describe "Network" $ do
     describe "read" $ do
       it "parses a valid IP address range" $ do
-        length (read "192.168.0.0/24" :: IPAddressRange) `shouldBe` 256
+        size (read "192.168.0.0/24" :: Network) `shouldBe` 256
 
       it "fails to parse an empty string" $ do
-        evaluate (read "" :: IPAddressRange) `shouldThrow` anyException
+        evaluate (read "" :: Network) `shouldThrow` anyException
 
       it "fails to parse a string that is not a CIDR block" $ do
-        evaluate (read "foo" :: IPAddressRange) `shouldThrow` anyException
+        evaluate (read "foo" :: Network) `shouldThrow` anyException
 
       it "fails to parse a string without a block" $ do
-        evaluate (read "192.168.0.1/" :: IPAddressRange) `shouldThrow` anyException
+        evaluate (read "192.168.0.1/" :: Network) `shouldThrow` anyException
 
       it "fails to parse a string with an invalid block" $ do
-        evaluate (read "192.168.0.0/foo" :: IPAddressRange) `shouldThrow` anyException
+        evaluate (read "192.168.0.0/foo" :: Network) `shouldThrow` anyException
 
       it "fails to parse a string with an invalid IP address" $ do
-        evaluate (read "192.168.0.256/24" :: IPAddressRange) `shouldThrow` anyException
+        evaluate (read "192.168.0.256/24" :: Network) `shouldThrow` anyException
 
       it "fails to parse a string with an out-of-range block" $ do
-        evaluate (read "192.168.0.0/-1" :: IPAddressRange) `shouldThrow` anyException
-        evaluate (read "192.168.0.0/33" :: IPAddressRange) `shouldThrow` anyException
+        evaluate (read "192.168.0.0/-1" :: Network) `shouldThrow` anyException
+        evaluate (read "192.168.0.0/33" :: Network) `shouldThrow` anyException
 
     describe "show" $ do
       it "returns a string representation of an IP address range" $ do
-        let r = read "192.168.0.0/30" :: IPAddressRange
-        show r `shouldBe` "[192.168.0.0,192.168.0.1,192.168.0.2,192.168.0.3]"
+        let r = read "192.168.0.0/30" :: Network
+        show r `shouldBe` "192.168.0.0/30"
 
-    describe "length" $ do
+    describe "size" $ do
       it "returns the number of IP addresses in the range" $ do
-        let r27 = read "192.168.0.0/27" :: IPAddressRange
-            r32 = read "192.168.0.0/32" :: IPAddressRange
-        length r27 `shouldBe` 2 ^ (32 - 27)
-        length r32 `shouldBe` 2 ^ (32 - 32)
+        let r27 = read "192.168.0.0/27" :: Network
+            r32 = read "192.168.0.0/32" :: Network
+        size r27 `shouldBe` 2 ^ (32 - 27)
+        size r32 `shouldBe` 2 ^ (32 - 32)
 
-  describe ".++." $ do
-    it "combines two IP address ranges" $ do
-      let x = read "192.168.0.0/30" :: IPAddressRange
-          y = read "10.10.10.10/30" :: IPAddressRange
-          z = x .++. y
-      show z `shouldBe` "[10.10.10.10,10.10.10.11,192.168.0.0,192.168.0.1,192.168.0.2,192.168.0.3]"
-
-    it "removes duplicate IP addresses" $ do
-      let x = read "192.168.0.0/30" :: IPAddressRange
-          y = read "192.168.0.2/30" :: IPAddressRange
-          z = x .++. y
-      show z `shouldBe` "[192.168.0.0,192.168.0.1,192.168.0.2,192.168.0.3]"
-
-  describe ".:" $ do
-    it "adds an IP adress to a range" $ do
-      let x = read "192.168.0.0/30" :: IPAddressRange
-          y = read "10.10.10.10" :: IPAddress
-          z = y .: x
-      show z `shouldBe` "[10.10.10.10,192.168.0.0,192.168.0.1,192.168.0.2,192.168.0.3]"
-
-    it "removes duplicate IP addresses" $ do
-      let x = read "192.168.0.0/30" :: IPAddressRange
-          y = read "192.168.0.2" :: IPAddress
-          z = y .: x
-      show z `shouldBe` "[192.168.0.0,192.168.0.1,192.168.0.2,192.168.0.3]"
-
-  describe "networkAddress" $ do
+  describe "networkPrefix" $ do
     it "returns the base network address in a range" $ do
-      let range1    = read "202.54.1.2/27" :: IPAddressRange
-          range2    = read "192.168.0.0/29" :: IPAddressRange
-          range3    = read "192.168.1.0/24" :: IPAddressRange
+      let range1    = read "202.54.1.2/27" :: Network
+          range2    = read "192.168.0.0/29" :: Network
+          range3    = read "192.168.1.0/24" :: Network
           expected1 = read "202.54.1.0" :: IPAddress
           expected2 = read "192.168.0.0" :: IPAddress
           expected3 = read "192.168.1.0" :: IPAddress
-      networkAddress range1 `shouldBe` expected1
-      networkAddress range2 `shouldBe` expected2
-      networkAddress range3 `shouldBe` expected3
+      networkPrefix range1 `shouldBe` expected1
+      networkPrefix range2 `shouldBe` expected2
+      networkPrefix range3 `shouldBe` expected3
 
   describe "subnetMask" $ do
     it "returns the network mask in a range" $ do
-      let range1    = read "202.54.1.2/27" :: IPAddressRange
-          range2    = read "192.168.0.0/29" :: IPAddressRange
-          range3    = read "192.168.1.0/24" :: IPAddressRange
-          range4    = read "172.16.0.0/12" :: IPAddressRange
+      let range1    = read "202.54.1.2/27" :: Network
+          range2    = read "192.168.0.0/29" :: Network
+          range3    = read "192.168.1.0/24" :: Network
+          range4    = read "172.16.0.0/12" :: Network
           expected1 = "255.255.255.224"
           expected2 = "255.255.255.248"
           expected3 = "255.255.255.0"
@@ -154,11 +128,26 @@ spec = do
       (show . subnetMask) range3 `shouldBe` expected3
       (show . subnetMask) range4 `shouldBe` expected4
 
+  describe "wildcardMask" $ do
+    it "returns the wildcard mask for an range" $ do
+      let range1    = read "202.54.1.2/27" :: Network
+          range2    = read "192.168.0.0/29" :: Network
+          range3    = read "192.168.1.0/24" :: Network
+          range4    = read "172.16.0.0/12" :: Network
+          expected1 = "0.0.0.31"
+          expected2 = "0.0.0.7"
+          expected3 = "0.0.0.255"
+          expected4 = "0.15.255.255"
+      (show . wildcardMask) range1 `shouldBe` expected1
+      (show . wildcardMask) range2 `shouldBe` expected2
+      (show . wildcardMask) range3 `shouldBe` expected3
+      (show . wildcardMask) range4 `shouldBe` expected4
+
   describe "broadcastAddress" $ do
     it "returns the broadcast address in a range" $ do
-      let range1    = read "172.16.0.0/12" :: IPAddressRange
-          range2    = read "192.168.1.0/24" :: IPAddressRange
-          range3    = read "202.54.1.2/27" :: IPAddressRange
+      let range1    = read "172.16.0.0/12" :: Network
+          range2    = read "192.168.1.0/24" :: Network
+          range3    = read "202.54.1.2/27" :: Network
           expected1 = "172.31.255.255"
           expected2 = "192.168.1.255"
           expected3 = "202.54.1.31"
@@ -168,11 +157,11 @@ spec = do
 
   describe "contains" $ do
     it "returns true if an IP address is contained within a range" $ do
-      let x = read "192.168.0.0/24" :: IPAddressRange
+      let x = read "192.168.0.0/24" :: Network
           ip = read "192.168.0.255" :: IPAddress
       x `contains` ip `shouldBe` True
 
     it "returns false if an IP address is not contained within a range" $ do
-      let x = read "192.168.0.0/24" :: IPAddressRange
+      let x = read "192.168.0.0/24" :: Network
           ip = read "192.168.1.0" :: IPAddress
       x `contains` ip `shouldBe` False

@@ -1,5 +1,5 @@
 name:                cider
-version:             0.1.0.0
+version:             0.2.0.0
 github:              "mdippery/cider"
 license:             LGPL-3
 author:              "Michael Dippery"
@@ -25,6 +25,7 @@ library:
   source-dirs: src
   ghc-options:
     - -Wall
+    - -Wno-type-defaults
   dependencies:
     - split
 

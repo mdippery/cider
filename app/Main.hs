@@ -26,11 +26,11 @@ import System.IO             (hPutStrLn, stderr)
 import Text.Printf           (printf)
 import Text.Read             (readMaybe)
 
-import Data.IP.IPv4 (IPAddressRange, addresses)
+import Data.IP.IPv4 (Network, usableRange)
 
 import qualified Paths_cider as P
 
-readBlock :: String -> Maybe IPAddressRange
+readBlock :: String -> Maybe Network
 readBlock = readMaybe
 
 help :: IO String
@@ -60,8 +60,8 @@ main = do
       version >>= putStrLn
     (ip:_) ->
       case readBlock ip of
-        Just r ->
-          putStrLn $ intercalate "\n" $ map show $ addresses r
+        Just n ->
+          putStrLn $ intercalate "\n" $ map show $ usableRange n
         Nothing -> do
           hPutStrLn stderr $ "Invalid CIDR block: " ++ show ip
           die 2
