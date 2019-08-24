@@ -164,7 +164,7 @@ data Network = Network
     --
     -- See <https://en.wikipedia.org/wiki/Subnetwork subnetwork> for more
     -- information.
-  , subnetMask    :: NetworkMask
+  , subnetMask :: NetworkMask
   }
 
 instance Show Network where
