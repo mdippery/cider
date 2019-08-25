@@ -50,7 +50,7 @@ module Data.IP.IPv4
   , contains
   ) where
 
-import Control.Monad (ap)
+import Control.Monad (ap, liftM2)
 import Data.Bits ((.&.), (.|.), Bits(..), complement, shift, xor)
 import Data.Bool (bool)
 import Data.List (intercalate)
@@ -206,7 +206,7 @@ parseStringToNetwork s =
          in Just $ Network np sm
 
 isOctet :: Word32 -> Bool
-isOctet n = n >= 0 && n < 256
+isOctet = liftM2 (&&) (>= 0) (< 256)
 
 maybeOctet :: Word32 -> Maybe Word32
 maybeOctet = ap (bool Nothing . Just) isOctet
@@ -236,7 +236,7 @@ wildcardMask = NetworkMask . xor 0xffffffff . asInteger . subnetMask
 -- | All of the IP addresses in the network, including its 'networkPrefix'
 -- and its 'broadcastAddress'.
 range :: Network -> [IPAddress]
-range net = enumFromTo (networkPrefix net) (broadcastAddress net)
+range = liftM2 enumFromTo networkPrefix broadcastAddress
 
 -- | All of the /usable/ IP addresses in the network.
 --
