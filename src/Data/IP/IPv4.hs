@@ -73,7 +73,7 @@ instance Show IPAddress where
   show = addressToString . addrAsInt
 
 instance Read IPAddress where
-  readsPrec _ = maybe [] (\a -> [(IPAddress a, "")]) . parseStringToAddress
+  readsPrec _ = maybe [] (readSuccess IPAddress) . parseStringToAddress
 
 instance Eq IPAddress where
   (IPAddress x) == (IPAddress y) = x == y
@@ -175,7 +175,10 @@ instance Show Network where
      in np ++ "/" ++ show m'
 
 instance Read Network where
-  readsPrec _ = maybe [] (\net -> [(net, "")]) . parseStringToNetwork
+  readsPrec _ = maybe [] (readSuccess id) . parseStringToNetwork
+
+readSuccess :: (t -> a) -> t -> [(a, String)]
+readSuccess f x = [(f x, "")]
 
 addressToString :: (Show a, Bits a, Num a) => a -> String
 addressToString n = intercalate "." $ map (show . shift') [24, 16, 8, 0]
