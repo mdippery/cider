@@ -100,7 +100,7 @@ instance Bits IPAddress where
   bitSizeMaybe = bitSizeMaybe . unpack
   isSigned _ = False
   testBit = testBit . unpack
-  bit = IPAddress . shiftL 0xf
+  bit = IPAddress . bit
   popCount = popCount . unpack
 
 instance Packable IPAddress where
@@ -138,7 +138,7 @@ instance Bits NetworkMask where
   bitSizeMaybe = bitSizeMaybe . unpack
   isSigned _ = False
   testBit = testBit . unpack
-  bit = NetworkMask . shiftL 0xf
+  bit = NetworkMask . bit
   popCount = popCount . unpack
 
 instance Packable NetworkMask where
