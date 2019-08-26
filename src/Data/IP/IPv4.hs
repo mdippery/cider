@@ -70,7 +70,7 @@ import Data.Integer.Unsigned (Packable(..))
 newtype IPAddress = IPAddress { addrAsInt :: Word32 }
 
 instance Show IPAddress where
-  show = addressToString . addrAsInt
+  show = addressToString . unpack
 
 instance Read IPAddress where
   readsPrec _ = maybe [] (readSuccess IPAddress) . parseStringToAddress
@@ -83,7 +83,7 @@ instance Ord IPAddress where
 
 instance Enum IPAddress where
   toEnum = IPAddress . fromIntegral
-  fromEnum = fromIntegral . addrAsInt
+  fromEnum = fromIntegral . unpack
 
 instance Bounded IPAddress where
   minBound = read "0.0.0.0"
@@ -114,10 +114,18 @@ instance Packable IPAddress where
 newtype NetworkMask = NetworkMask { maskAsInt :: Word32 }
 
 instance Show NetworkMask where
-  show = addressToString . maskAsInt
+  show = addressToString . unpack
 
 instance Eq NetworkMask where
   (NetworkMask x) == (NetworkMask y) = x == y
+
+instance Enum NetworkMask where
+  toEnum = NetworkMask . fromIntegral
+  fromEnum = fromIntegral . unpack
+
+instance Bounded NetworkMask where
+  minBound = NetworkMask 0x0
+  maxBound = NetworkMask 0xffffffff
 
 instance Bits NetworkMask where
   (NetworkMask x) .&. (NetworkMask y) = NetworkMask $ x .&. y
