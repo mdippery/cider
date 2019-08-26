@@ -85,8 +85,10 @@ spec = do
       it "fails to parse a string with an invalid IP address" $ do
         evaluate (read "192.168.0.256/24" :: Network) `shouldThrow` anyException
 
-      it "fails to parse a string with an out-of-range block" $ do
+      it "fails to parse a string with a negative block" $ do
         evaluate (read "192.168.0.0/-1" :: Network) `shouldThrow` anyException
+
+      it "fails to parse a string with an out-of-range block" $ do
         evaluate (read "192.168.0.0/33" :: Network) `shouldThrow` anyException
 
     describe "show" $ do
