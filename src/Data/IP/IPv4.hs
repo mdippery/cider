@@ -119,10 +119,6 @@ instance Show NetworkMask where
 instance Eq NetworkMask where
   (NetworkMask x) == (NetworkMask y) = x == y
 
-instance Enum NetworkMask where
-  toEnum = NetworkMask . fromIntegral
-  fromEnum = fromIntegral . unpack
-
 instance Bounded NetworkMask where
   minBound = NetworkMask 0x0
   maxBound = NetworkMask 0xffffffff
