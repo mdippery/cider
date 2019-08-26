@@ -94,8 +94,8 @@ instance Bits IPAddress where
   (IPAddress x) .|. (IPAddress y) = IPAddress $ x .|. y
   (IPAddress x) `xor` (IPAddress y) = IPAddress $ x `xor` y
   complement = IPAddress . complement . unpack
-  shift (IPAddress x) i = IPAddress x `shift` i
-  rotate (IPAddress x) i = IPAddress $ rotate x i
+  shift x i = IPAddress $ shift (unpack x) i
+  rotate x i = IPAddress $ rotate (unpack x) i
   bitSize = fromJust . bitSizeMaybe
   bitSizeMaybe = bitSizeMaybe . unpack
   isSigned _ = False
