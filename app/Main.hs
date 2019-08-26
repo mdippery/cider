@@ -18,7 +18,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 module Main where
 
-import Data.List             (intercalate)
 import Data.Version          (showVersion)
 import System.Environment    (getArgs, getProgName)
 import System.Exit           (ExitCode(..), exitSuccess, exitWith)
@@ -36,11 +35,22 @@ readBlock = readMaybe
 help :: IO String
 help = printf "Usage: %s <cidr block>" <$> getProgName
 
+banner :: String
+banner = unlines
+  [
+    "         _     __"
+  , "   _____(_)___/ /__  _____"
+  , " / ___/ / __  / _ \\/ ___/"
+  , " / /__/ / /_/ /  __/ /"
+  , " \\___/_/\\__,_/\\___/_/  v%s"
+  , "   a network calculator"
+  , "  ======================"
+  ]
+
 version :: IO String
 version = do
-  exe <- getProgName
   let v = showVersion P.version
-  return $ printf "%s v%s" exe v
+  return $ printf banner v
 
 die :: Int -> IO ()
 die 0    = exitSuccess
@@ -61,7 +71,7 @@ main = do
     (ip:_) ->
       case readBlock ip of
         Just n ->
-          putStrLn $ intercalate "\n" $ map show $ usableRange n
+          putStr $ unlines $ map show $ usableRange n
         Nothing -> do
           hPutStrLn stderr $ "Invalid CIDR block: " ++ show ip
           die 2
