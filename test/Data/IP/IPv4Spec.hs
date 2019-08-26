@@ -187,6 +187,73 @@ spec = do
             ip2 = read "192.168.0.0/17" :: Network
         subnetMask ip1 == subnetMask ip2 `shouldBe` False
 
+    describe "Bits" $ do
+      describe ".&." $ do
+        it "ANDs two masks together" $ do
+          let lhs = subnetMask (read "192.168.0.1/24")
+              rhs = subnetMask (read "192.168.0.1/16")
+              exp = subnetMask (read "192.168.0.1/16")
+          lhs .&. rhs `shouldBe` exp
+
+      describe ".|." $ do
+        it "ORs two IP addresses together" $ do
+          let lhs = subnetMask (read "192.168.0.1/24")
+              rhs = subnetMask (read "192.168.0.1/16")
+              exp = subnetMask (read "192.168.0.1/24")
+          lhs .|. rhs `shouldBe` exp
+
+      describe "xor" $ do
+        it "XORs two IP addresses together" $ do
+          let lhs = subnetMask (read "192.168.0.1/24")
+              rhs = wildcardMask (read "192.168.0.1/32")
+              exp = subnetMask (read "192.168.0.1/24")
+          lhs `xor` rhs `shouldBe` exp
+
+      describe "complement" $ do
+        it "returns the complement of an IP address" $ do
+          let ip  = subnetMask (read "192.168.0.1/24")
+              exp = wildcardMask (read "192.168.0.1/24")
+          complement ip `shouldBe` exp
+
+      describe "shift" $ do
+        it "shifts an IP address" $ do
+          let lhs = subnetMask (read "192.168.0.1/24")
+              exp = subnetMask (read "192.168.0.1/8")
+          lhs `shift` 16 `shouldBe` exp
+
+      describe "rotate" $ do
+        it "rotates an IP address" $ do
+          let lhs = subnetMask (read "192.168.0.1/16")
+              exp = wildcardMask (read "192.168.0.1/16")
+          lhs `rotate` 16 `shouldBe` exp
+
+      describe "bitSize" $ do
+        it "should be 32" $ do
+          bitSize (subnetMask (read "192.168.0.1/24")) `shouldBe` 32
+
+      describe "bitSizeMaybe" $ do
+        it "should be 32" $ do
+          fromJust (bitSizeMaybe (subnetMask (read "192.168.0.1/24"))) `shouldBe` 32
+
+      describe "isSigned" $ do
+        it "should return false" $ do
+          isSigned (subnetMask (read "192.168.0.1/24")) `shouldBe` False
+
+      describe "testBit" $ do
+        it "returns true if the nth bit is 1" $ do
+          testBit (subnetMask (read "192.168.0.1/24")) 14 `shouldBe` True
+
+        it "returns false if the nth bit is 1" $ do
+          testBit (subnetMask (read "192.168.0.1/24")) 2 `shouldBe` False
+
+      describe "bit" $ do
+        it "returns a mask with the nth bit set" $ do
+          bit 0 `shouldBe` (wildcardMask (read "192.168.0.1/31"))
+
+      describe "popCount" $ do
+        it "returns the number of 1 bits in the mask" $ do
+          popCount (subnetMask (read "192.168.0.1/24")) `shouldBe` 24
+
   describe "networkPrefix" $ do
     it "returns the base network address in a range" $ do
       let range1    = read "202.54.1.2/27" :: Network
