@@ -101,6 +101,18 @@ spec = do
         size r27 `shouldBe` 2 ^ (32 - 27)
         size r32 `shouldBe` 2 ^ (32 - 32)
 
+  describe "NetworkMask" $ do
+    describe "==" $ do
+      it "returns true if two network masks are equal" $ do
+        let ip1 = read "192.168.0.0/27" :: Network
+            ip2 = read "192.168.0.0/27" :: Network
+        subnetMask ip1 == subnetMask ip2 `shouldBe` True
+
+      it "returns false if two network masks are not equal" $ do
+        let ip1 = read "192.168.0.0/27" :: Network
+            ip2 = read "192.168.0.0/17" :: Network
+        subnetMask ip1 == subnetMask ip2 `shouldBe` False
+
   describe "networkPrefix" $ do
     it "returns the base network address in a range" $ do
       let range1    = read "202.54.1.2/27" :: Network
