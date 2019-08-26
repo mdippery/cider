@@ -59,7 +59,7 @@ import Data.Word (Word32)
 
 import Data.List.Split (splitOn)
 
-import Data.Integer (UnsignedInteger(..))
+import Data.Integer.Unsigned (Packable(..))
 
 -- | A 32-bit IPv4 network address.
 --
@@ -93,18 +93,18 @@ instance Bits IPAddress where
   (IPAddress x) .&. (IPAddress y) = IPAddress $ x .&. y
   (IPAddress x) .|. (IPAddress y) = IPAddress $ x .|. y
   (IPAddress x) `xor` (IPAddress y) = IPAddress $ x `xor` y
-  complement = IPAddress . complement . asInteger
+  complement = IPAddress . complement . unpack
   shift (IPAddress x) i = IPAddress x `shift` i
   rotate (IPAddress x) i = IPAddress $ rotate x i
   bitSize = fromJust . bitSizeMaybe
-  bitSizeMaybe = bitSizeMaybe . asInteger
+  bitSizeMaybe = bitSizeMaybe . unpack
   isSigned _ = False
-  testBit = testBit . asInteger
+  testBit = testBit . unpack
   bit = IPAddress . shiftL 0xf
-  popCount = popCount . asInteger
+  popCount = popCount . unpack
 
-instance UnsignedInteger IPAddress where
-  asInteger = addrAsInt
+instance Packable IPAddress where
+  unpack = addrAsInt
 
 -- | A 32-bit network mask.
 --
@@ -123,18 +123,18 @@ instance Bits NetworkMask where
   (NetworkMask x) .&. (NetworkMask y) = NetworkMask $ x .&. y
   (NetworkMask x) .|. (NetworkMask y) = NetworkMask $ x .|. y
   (NetworkMask x) `xor` (NetworkMask y) = NetworkMask $ x `xor` y
-  complement = NetworkMask . complement . asInteger
+  complement = NetworkMask . complement . unpack
   shift (NetworkMask x) i = NetworkMask $ x `shift` i
   rotate (NetworkMask x) i = NetworkMask $ x `rotate` i
   bitSize = fromJust . bitSizeMaybe
-  bitSizeMaybe = bitSizeMaybe . asInteger
+  bitSizeMaybe = bitSizeMaybe . unpack
   isSigned _ = False
-  testBit = testBit . asInteger
+  testBit = testBit . unpack
   bit = NetworkMask . shiftL 0xf
-  popCount = popCount . asInteger
+  popCount = popCount . unpack
 
-instance UnsignedInteger NetworkMask where
-  asInteger = maskAsInt
+instance Packable NetworkMask where
+  unpack = maskAsInt
 
 -- | Represents an IPv4 network or subnet.
 --
@@ -205,7 +205,7 @@ parseStringToNetwork s =
       | otherwise ->
         let
           sm = maskFromBits mask
-          np = IPAddress $ base .&. (asInteger sm)
+          np = IPAddress $ base .&. (unpack sm)
          in Just $ Network np sm
 
 isOctet :: Word32 -> Bool
@@ -223,8 +223,8 @@ maskFromBits = NetworkMask . shift 0xffffffff . fromIntegral . (32 -)
 -- will be received by all devices connected to that network.
 broadcastAddress :: Network -> IPAddress
 broadcastAddress net =
-  let lhs = asInteger $ complement $ subnetMask net
-      rhs = asInteger $ networkPrefix net
+  let lhs = unpack $ complement $ subnetMask net
+      rhs = unpack $ networkPrefix net
    in IPAddress $ lhs .|. rhs
 
 -- | The network's /wildcard mask/.
@@ -234,7 +234,7 @@ broadcastAddress net =
 -- which is used to separate the network prefix from the rest of an
 -- IPv4 address.
 wildcardMask :: Network -> NetworkMask
-wildcardMask = NetworkMask . xor 0xffffffff . asInteger . subnetMask
+wildcardMask = NetworkMask . xor 0xffffffff . unpack . subnetMask
 
 -- | All of the IP addresses in the network, including its 'networkPrefix'
 -- and its 'broadcastAddress'.

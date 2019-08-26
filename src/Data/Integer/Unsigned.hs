@@ -18,22 +18,22 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
 {-|
-  Module      : Data.Integer
-  Description : Integers as data
+  Module      : Data.Integer.Unsigned
+  Description : Unsigned integers as data
   License     : LGPL-3
   Maintainer  : michael@monkey-robot.com
 
-  Work with integer values as data.
+  Work with unsigned integer values as data.
 -}
-module Data.Integer
+module Data.Integer.Unsigned
   (
     -- * Data types
-    UnsignedInteger(..)
+    Packable(..)
   ) where
 
 import Data.Word (Word32)
 
 -- | A data type that can be represented as an unsigned integer.
-class UnsignedInteger a where
+class Packable a where
   -- | The unsigned integer representation of the data type.
-  asInteger :: a -> Word32
+  unpack :: a -> Word32
