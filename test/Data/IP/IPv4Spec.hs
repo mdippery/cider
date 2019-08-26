@@ -1,9 +1,10 @@
 module Data.IP.IPv4Spec where
 
-import Prelude hiding (length)
-
 import Control.Exception (evaluate)
+import Data.Bits
+import Data.Maybe (fromJust)
 import Test.Hspec
+
 import Data.IP.IPv4
 
 spec :: Spec
@@ -64,6 +65,77 @@ spec = do
 
       it "should wrap around if the first IP address has been reached" $ do
         pred (read "0.0.0.0" :: IPAddress) `shouldBe` (read "255.255.255.255")
+
+    describe "Bits" $ do
+      describe ".&." $ do
+        it "ANDs two IP addresses together" $ do
+          let lhs = read "255.255.255.0" :: IPAddress
+              rhs = read "192.168.7.14" :: IPAddress
+              exp = read "192.168.7.0" :: IPAddress
+          lhs .&. rhs `shouldBe` exp
+
+      describe ".|." $ do
+        it "ORs two IP addresses together" $ do
+          let lhs = read "255.255.255.0" :: IPAddress
+              rhs = read "192.168.7.14" :: IPAddress
+              exp = read "255.255.255.14" :: IPAddress
+          lhs .|. rhs `shouldBe` exp
+
+      describe "xor" $ do
+        it "XORs two IP addresses together" $ do
+          let lhs = read "255.255.255.0" :: IPAddress
+              rhs = read "192.168.7.14" :: IPAddress
+              exp = read "63.87.248.14" :: IPAddress
+          lhs `xor` rhs `shouldBe` exp
+
+      describe "complement" $ do
+        it "returns the complement of an IP address" $ do
+          let ip  = read "255.255.255.255" :: IPAddress
+              exp = read "0.0.0.0" :: IPAddress
+          complement ip `shouldBe` exp
+
+      describe "shift" $ do
+        it "shifts an IP address" $ do
+          let ip  = read "0.0.0.255" :: IPAddress
+              exp = read "0.255.0.0" :: IPAddress
+          ip `shift` 16 `shouldBe` exp
+
+      describe "rotate" $ do
+        it "rotates an IP address" $ do
+          let ip  = read "0.0.0.255" :: IPAddress
+              exp = read "0.255.0.0" :: IPAddress
+          ip `rotate` 16 `shouldBe` exp
+
+      describe "bitSize" $ do
+        it "should be 32" $ do
+          bitSize (read "0.0.0.255" :: IPAddress) `shouldBe` 32
+
+      describe "bitSizeMaybe" $ do
+        it "should be 32" $ do
+          fromJust (bitSizeMaybe (read "0.0.0.255" :: IPAddress)) `shouldBe` 32
+
+      describe "isSigned" $ do
+        it "should return false" $ do
+          isSigned (read "192.168.0.1" :: IPAddress) `shouldBe` False
+
+      describe "testBit" $ do
+        it "returns true if the nth bit is 1" $ do
+          let ip = read "192.168.0.4" :: IPAddress
+          testBit ip 2 `shouldBe` True
+
+        it "returns false if the nth bit is 1" $ do
+          let ip = read "192.168.0.4" :: IPAddress
+          testBit ip 14 `shouldBe` False
+
+      describe "bit" $ do
+        it "returns an IP address with the nth bit set" $ do
+          let exp = read "0.0.1.0" :: IPAddress
+          bit 8 `shouldBe` exp
+
+      describe "popCount" $ do
+        it "returns the number of 1 bits in the IP address" $ do
+          let ip = read "192.168.0.4" :: IPAddress
+          popCount ip `shouldBe` 6
 
   describe "Network" $ do
     describe "read" $ do
