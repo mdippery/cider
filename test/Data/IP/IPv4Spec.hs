@@ -203,27 +203,27 @@ spec = do
           lhs .&. rhs `shouldBe` exp
 
       describe ".|." $ do
-        it "ORs two IP addresses together" $ do
+        it "ORs two masks together" $ do
           let lhs = subnetMask (read "192.168.0.1/24")
               rhs = subnetMask (read "192.168.0.1/16")
               exp = subnetMask (read "192.168.0.1/24")
           lhs .|. rhs `shouldBe` exp
 
       describe "xor" $ do
-        it "XORs two IP addresses together" $ do
+        it "XORs two masks together" $ do
           let lhs = subnetMask (read "192.168.0.1/24")
               rhs = wildcardMask (read "192.168.0.1/32")
               exp = subnetMask (read "192.168.0.1/24")
           lhs `xor` rhs `shouldBe` exp
 
       describe "complement" $ do
-        it "returns the complement of an IP address" $ do
+        it "returns the complement of a mask" $ do
           let ip  = subnetMask (read "192.168.0.1/24")
               exp = wildcardMask (read "192.168.0.1/24")
           complement ip `shouldBe` exp
 
       describe "shift" $ do
-        it "shifts an IP address" $ do
+        it "shifts a mask" $ do
           let lhs = subnetMask (read "192.168.0.1/24")
               exp = subnetMask (read "192.168.0.1/8")
           lhs `shift` 16 `shouldBe` exp
@@ -260,6 +260,13 @@ spec = do
       describe "popCount" $ do
         it "returns the number of 1 bits in the mask" $ do
           popCount (subnetMask (read "192.168.0.1/24")) `shouldBe` 24
+
+    describe "bounded" $ do
+      it "returns the minimum mask" $ do
+        (minBound :: NetworkMask) `shouldBe` (wildcardMask (read "0.0.0.0/32"))
+
+      it "returns the maximum IP address" $ do
+        (maxBound :: NetworkMask) `shouldBe` (subnetMask (read "0.0.0.0/32"))
 
   describe "networkPrefix" $ do
     it "returns the base network address in a range" $ do
