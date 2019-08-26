@@ -28,12 +28,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 module Data.Integer
   (
     -- * Data types
-    AsInteger(..)
+    UnsignedInteger(..)
   ) where
 
 import Data.Word (Word32)
 
--- | A data type that can be represented as an integer.
-class AsInteger a where
-  -- | The integer representation of the data type.
+-- | A data type that can be represented as an unsigned integer.
+class UnsignedInteger a where
+  -- | The unsigned integer representation of the data type.
   asInteger :: a -> Word32

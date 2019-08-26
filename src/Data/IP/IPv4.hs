@@ -59,7 +59,7 @@ import Data.Word (Word32)
 
 import Data.List.Split (splitOn)
 
-import Data.Integer (AsInteger(..))
+import Data.Integer (UnsignedInteger(..))
 
 -- | A 32-bit IPv4 network address.
 --
@@ -103,7 +103,7 @@ instance Bits IPAddress where
   bit = IPAddress . shiftL 0xf
   popCount = popCount . asInteger
 
-instance AsInteger IPAddress where
+instance UnsignedInteger IPAddress where
   asInteger = addrAsInt
 
 -- | A 32-bit network mask.
@@ -133,7 +133,7 @@ instance Bits NetworkMask where
   bit = NetworkMask . shiftL 0xf
   popCount = popCount . asInteger
 
-instance AsInteger NetworkMask where
+instance UnsignedInteger NetworkMask where
   asInteger = maskAsInt
 
 -- | Represents an IPv4 network or subnet.
