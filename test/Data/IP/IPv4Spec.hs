@@ -175,6 +175,13 @@ spec = do
         size r27 `shouldBe` 2 ^ (32 - 27)
         size r32 `shouldBe` 2 ^ (32 - 32)
 
+    describe "usableSize" $ do
+      it "returns the number of IP addresses in the range" $ do
+        let r24 = read "192.168.0.4/24" :: Network
+            r16 = read "192.168.0.4/16" :: Network
+        usableSize r24 `shouldBe` 2 ^ (32 - 24) - 2
+        usableSize r16 `shouldBe` 2 ^ (32 - 16) - 2
+
   describe "NetworkMask" $ do
     describe "==" $ do
       it "returns true if two network masks are equal" $ do
