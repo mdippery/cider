@@ -34,6 +34,9 @@ import qualified Paths_cider as P
 read :: String -> Maybe Network
 read = readMaybe
 
+oops :: String -> IO ()
+oops = hPutStrLn stderr
+
 help :: IO String
 help = printf "Usage: %s <cidr block>" <$> getProgName
 
@@ -75,7 +78,7 @@ main = do
         Just n ->
           putStr $ unlines $ map show $ usableRange n
         Nothing -> do
-          hPutStrLn stderr $ "Invalid CIDR block: " ++ show ip
+          oops $ "Invalid CIDR block: " ++ show ip
           die 2
     _ ->
-      help >>= hPutStrLn stderr >> die 1
+      help >>= oops >> die 1
