@@ -18,6 +18,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 module Main where
 
+import Prelude hiding (read)
+
 import Data.Version          (showVersion)
 import System.Environment    (getArgs, getProgName)
 import System.Exit           (ExitCode(..), exitSuccess, exitWith)
@@ -29,8 +31,8 @@ import Data.IP.IPv4 (Network, usableRange)
 
 import qualified Paths_cider as P
 
-readBlock :: String -> Maybe Network
-readBlock = readMaybe
+read :: String -> Maybe Network
+read = readMaybe
 
 help :: IO String
 help = printf "Usage: %s <cidr block>" <$> getProgName
@@ -69,7 +71,7 @@ main = do
     ("--version":_) ->
       version >>= putStrLn
     (ip:_) ->
-      case readBlock ip of
+      case read ip of
         Just n ->
           putStr $ unlines $ map show $ usableRange n
         Nothing -> do
