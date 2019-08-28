@@ -12,10 +12,11 @@ extra-source-files:
 synopsis:            Calculates IP addresses contained in a CIDR block
 category:            Networking
 
-# To avoid duplicated efforts in documentation and dealing with the
-# complications of embedding Haddock markup inside cabal files, it is
-# common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/mdippery/cider#readme>
+description: |
+  Calculates IP addresses contained in a CIDR block.
+  .
+  This package contains both a command-line utility called @cider@
+  and a module for working with IP addresses.
 
 dependencies:
   - base >= 4.7 && < 5
