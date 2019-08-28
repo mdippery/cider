@@ -8,6 +8,7 @@ copyright:           "2019 Michael Dippery"
 
 extra-source-files:
   - COPYING
+  - README.md
 
 synopsis:            Calculates IP addresses contained in a CIDR block
 category:            Networking
