@@ -104,6 +104,7 @@ instance Bits IPAddress where
   popCount = popCount . unpack
 
 instance Packable IPAddress where
+  pack = IPAddress
   unpack = addrAsInt
 
 -- | A 32-bit network mask.
@@ -138,6 +139,7 @@ instance Bits NetworkMask where
   popCount = popCount . unpack
 
 instance Packable NetworkMask where
+  pack = NetworkMask
   unpack = maskAsInt
 
 -- | Represents an IPv4 network or subnet.
@@ -208,7 +210,7 @@ parseStringToNetwork s =
       | mask > 32 -> Nothing
       | otherwise ->
         let sm = maskFromBits mask
-            np = IPAddress $ base .&. (unpack sm)
+            np = pack $ base .&. (unpack sm)
          in Just $ Network np sm
 
 isOctet :: Word32 -> Bool
@@ -218,7 +220,7 @@ maybeOctet :: Word32 -> Maybe Word32
 maybeOctet = ap (bool Nothing . Just) isOctet
 
 maskFromBits :: Word32 -> NetworkMask
-maskFromBits = NetworkMask . shift 0xffffffff . fromIntegral . (32 -)
+maskFromBits = pack . shift 0xffffffff . fromIntegral . (32 -)
 
 -- | The network's /broadcast address/.
 --
@@ -228,7 +230,7 @@ broadcastAddress :: Network -> IPAddress
 broadcastAddress net =
   let lhs = unpack $ complement $ subnetMask net
       rhs = unpack $ networkPrefix net
-   in IPAddress $ lhs .|. rhs
+   in pack $ lhs .|. rhs
 
 -- | The network's /wildcard mask/.
 --
@@ -237,7 +239,7 @@ broadcastAddress net =
 -- which is used to separate the network prefix from the rest of an
 -- IPv4 address.
 wildcardMask :: Network -> NetworkMask
-wildcardMask = NetworkMask . xor 0xffffffff . unpack . subnetMask
+wildcardMask = pack . xor 0xffffffff . unpack . subnetMask
 
 -- | All of the IP addresses in the network, including its 'networkPrefix'
 -- and its 'broadcastAddress'.

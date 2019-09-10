@@ -35,5 +35,8 @@ import Data.Word (Word32)
 
 -- | A data type that can be represented as an unsigned integer.
 class Packable a where
+  -- | Converts an unsigned integer into the packable data type.
+  pack :: Word32 -> a
+
   -- | The unsigned integer representation of the data type.
   unpack :: a -> Word32
