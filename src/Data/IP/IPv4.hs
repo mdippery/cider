@@ -173,7 +173,7 @@ data Network = Network
 
 instance Show Network where
   show net =
-    let m   = complement $ maskAsInt $ subnetMask net
+    let m   = complement $ unpack $ subnetMask net
         m'  = ((32 -) . round . logBase 2 . fromIntegral) m
         np  = show $ networkPrefix net
      in np ++ "/" ++ show m'
