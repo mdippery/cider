@@ -207,9 +207,8 @@ parseStringToNetwork s =
     Just (base, mask)
       | mask > 32 -> Nothing
       | otherwise ->
-        let
-          sm = maskFromBits mask
-          np = IPAddress $ base .&. (unpack sm)
+        let sm = maskFromBits mask
+            np = IPAddress $ base .&. (unpack sm)
          in Just $ Network np sm
 
 isOctet :: Word32 -> Bool
