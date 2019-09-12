@@ -24,7 +24,7 @@ To install Cider, run:
 
 By default, Cider will be installed to `~/.local/bin/cider`.
 
-You can also download a pre-compiled binary for your platform from [release]
+You can also download a pre-compiled binary for your platform from the [release]
 page. Unpack the tarball and copy the `cider` binary to somewhere on your
 `$PATH`.
 
