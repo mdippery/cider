@@ -4,7 +4,7 @@
 ##     export CIDER_VERSION=<cider version>
 ##     docker build --build-arg CIDER_VERSION -t mipadi/cider -t mipadi/cider:$CIDER_VERSION .
 ##     mkdir .build
-##     docker run --rm -it -v $(pwd)/.build:/root/build mipadi/cider
+##     docker run --rm -v $(pwd)/.build:/root/build mipadi/cider
 
 FROM ubuntu:latest AS source
 
