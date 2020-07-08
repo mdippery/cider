@@ -235,7 +235,7 @@ broadcastAddress net =
 -- | The network's /wildcard mask/.
 --
 -- This mask can be used to separate the host identifier from the rest of
--- an IPv4 address. Essentially it is the opposite of the 'wildcardMask',
+-- an IPv4 address. Essentially it is the opposite of the 'subnetMask',
 -- which is used to separate the network prefix from the rest of an
 -- IPv4 address.
 wildcardMask :: Network -> NetworkMask
