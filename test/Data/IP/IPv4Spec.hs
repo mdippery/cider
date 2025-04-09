@@ -142,6 +142,9 @@ spec = do
       it "parses a valid IP address range" $ do
         size (read "192.168.0.0/24" :: Network) `shouldBe` 256
 
+      it "allows a /0 block" $ do
+        size (read "192.168.0.0/0" :: Network) `shouldBe` (2 ^ 32)
+
       it "fails to parse an empty string" $ do
         evaluate (read "" :: Network) `shouldThrow` anyException
 
